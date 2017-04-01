@@ -1,0 +1,76 @@
+vim安装youcomplete插件，折磨我好久，装不好硬是要把它装好，结果最后终于装好这个补全的插件。为了需要安装的人少走弯
+路，我的安装过程如下(主要提供步骤)：
+1、先看你的vim版本是多少。
+我的是vim 7.4.52貌似支持Python。但是还是不行说是不支持YCM。
+ 最后只能安装vim8.0，手动安装。
+ 具体可以vim --version看来下python和python3是否满足；然后首先将存在的vim全部卸载掉，包括vim-runtime等
+
+这里安装的是vim8.0，整个编译过程如下：
+ubuntu系列
+sudo apt-get install libncurses5-dev libgnome2-dev libgnomeui-dev \
+    libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
+    libcairo2-dev libx11-dev libxpm-dev libxt-dev python-dev \
+    python3-dev ruby-dev lua5.1 lua5.1-dev Git
+git clone https://github.com/vim/vim.git
+ --with-python-config-dir=/usr/lib/python2.7/config（这个目录要注意，根据自己的实际目录） 
+make 
+sudo make install
+最后vim --version 检查vim版本和是否支持python。
+首先安装一些依赖
+最后git clone进行编译即可，这里有一个选项要注意，--enable-pythoninterp和--enable-python3interp就是上面vim对python版
+本的支持，如果要安装ycm一定要带上
+cd vim
+./configure --with-features=huge --enable-multibyte --enable-rubyinterp --enable-pythoninterp \
+--enable-python3interp 
+--with-python3-config-dir=/usr/lib/python3.5/config --enable-perlinterp --enable-luainterp 
+--enable-gui=gtk2 --enable-cscope --prefix=/usr/bin
+
+2、插件安装：
+https://github.com/Valloric/YouCompleteMe#full-installation-guide(官网) 网址里面的 Full Installation Guide
+的第二步、       配置文件.vimrc用的是     https://github.com/j1z0/vim-config/blob/master/vimrc
+
+3、收尾工作
+ sudo apt-get install cmake   sudo apt-get install python-dev python3-dev
+ .vim/bundle/YouCompleteMe 下跑
+
+ ./install.sh --clang-completer
+
+参数是为了支持c/c++ 的补全。
+
+安装完成后进行一些简单的配置就可以使用。
+
+YouCompleteMe 的补全配置文件在
+
+~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp.ycm_extra_conf.py，这是个隐藏文件。
+
+默认会使用这个文件，也可以把这个文件copy到工程的根目录中作修改，打开工程文件时会优先使用当前目录下的配置文件。
+
+如果找不到，会根据配置中的ycm_global_ycm_extra_conf 进行查找。
+
+
+
+最后：在.vimrc 中添加
+
+let mapleader = ","  " 这个leader就映射为逗号“，”
+
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/cpp/ycm/.ycm_extra_conf.py'   “配置默认的
+
+ycm_extra_conf.py
+
+nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>   “按,jd 会跳转到定义
+
+let g:ycm_confirm_extra_conf=0    “打开vim时不再询问是否加载ycm_extra_conf.py配置
+
+let g:ycm_collect_identifiers_from_tag_files = 1 "使用ctags生成的tags文件
+
+
+
+等到后面如果需要其他的配置，可以直接到/.vimrc文件直接配置插件，然后更新即可。
+
+网上有详细的步骤，我只是针对自己的安装做个简单的过程记录，有遇到错误的小伙伴可以给我留言。
+
+参考博客：
+
+https://github.com/Valloric/YouCompleteMe#full-installation-guide
+
+http://www.cnblogs.com/junnyfeng/p/3633697.html
